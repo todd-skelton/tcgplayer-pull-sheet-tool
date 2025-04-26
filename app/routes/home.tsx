@@ -38,7 +38,9 @@ interface CsvProduct {
 interface Product {
   productLine: string;
   productName: string;
-  condition: Condition;
+  displayName: string;
+  condition: string;
+  displayCondition: Condition;
   printing: string;
   number: string;
   set: string;
@@ -59,26 +61,44 @@ const conditions: Condition[] = [
 ];
 
 function parseConditionAndPrinting(condition: string): {
-  condition: Condition;
+  displayCondition: Condition;
   printing: string;
 } {
   const foundCondition = conditions.find((c) => condition?.startsWith(c));
   const foundPrinting = condition.substring(foundCondition?.length || 0).trim();
   return {
-    condition: foundCondition || "Unknown",
+    displayCondition: foundCondition || "Unknown",
     printing: foundPrinting,
   };
 }
 
+function buildDisplayName(
+  productName: string,
+  number: string,
+  printing: string,
+  rarity: string
+): string {
+  if (!productName.endsWith(number))
+    return `${productName} - ${number} - ${rarity} ${printing}`;
+  return `${productName} - ${rarity} ${printing}`;
+}
+
 function parseCsvProduct(csvProduct: CsvProduct): Product {
-  const { condition, printing } = parseConditionAndPrinting(
+  const { displayCondition, printing } = parseConditionAndPrinting(
     csvProduct.Condition
   );
 
   return {
     productLine: csvProduct["Product Line"],
     productName: csvProduct["Product Name"],
-    condition: condition,
+    displayName: buildDisplayName(
+      csvProduct["Product Name"],
+      csvProduct.Number,
+      printing,
+      csvProduct.Rarity
+    ),
+    condition: csvProduct["Condition"],
+    displayCondition: displayCondition,
     printing: printing,
     number: csvProduct.Number,
     set: csvProduct.Set,
@@ -147,9 +167,6 @@ export default function Home() {
               <TableCell align="right">Quantity</TableCell>
               <TableCell>Product Name</TableCell>
               <TableCell>Condition</TableCell>
-              <TableCell>Printing</TableCell>
-              <TableCell>Number</TableCell>
-              <TableCell>Rarity</TableCell>
               <TableCell>Main</TableCell>
               <TableCell>Photo URL</TableCell>
               <TableCell>Set Release Date</TableCell>
@@ -180,28 +197,27 @@ export default function Home() {
                   textColor = theme.palette.text.primary;
               }
               return (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  sx={{
+                    backgroundColor:
+                      index % 2 === 0 ? theme.palette.action.hover : "inherit",
+                  }}
+                >
                   <TableCell sx={{ color: textColor }}>
                     {product.productLine}
                   </TableCell>
-                  <TableCell sx={{ color: textColor }}>{product.set}</TableCell>
+                  <TableCell sx={{ color: textColor }} align="right">
+                    {product.set}
+                  </TableCell>
                   <TableCell sx={{ color: textColor }} align="right">
                     {product.quantity}
                   </TableCell>
                   <TableCell sx={{ color: textColor }}>
-                    {product.productName}
+                    {product.displayName}
                   </TableCell>
                   <TableCell sx={{ color: textColor }}>
-                    {product.condition}
-                  </TableCell>
-                  <TableCell sx={{ color: textColor }}>
-                    {product.printing}
-                  </TableCell>
-                  <TableCell sx={{ color: textColor }}>
-                    {product.number}
-                  </TableCell>
-                  <TableCell sx={{ color: textColor }}>
-                    {product.rarity}
+                    {product.displayCondition}
                   </TableCell>
                   <TableCell sx={{ color: textColor }}>
                     {product.main}
