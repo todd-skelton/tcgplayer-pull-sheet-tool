@@ -92,7 +92,7 @@ function parseCsvProduct(csvProduct: CsvProduct): Product {
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "TCGplayer Pull Sheet Tool" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
