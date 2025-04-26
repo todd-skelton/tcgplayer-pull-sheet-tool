@@ -175,7 +175,7 @@ export default function Home() {
           <TableBody>
             {products.map((product, index) => {
               let textColor = theme.palette.text.primary;
-              switch (product.condition) {
+              switch (product.displayCondition) {
                 case "Near Mint":
                   break;
                 case "Lightly Played":
