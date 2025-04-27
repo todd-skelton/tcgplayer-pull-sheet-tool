@@ -1,4 +1,5 @@
 import {
+  AppBar,
   Button,
   Stack,
   Table,
@@ -6,6 +7,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Toolbar,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -147,17 +149,23 @@ export default function Home() {
   };
   return (
     <Stack spacing={2}>
-      <Typography variant="h4">TCGplayer Pull Sheet Tool</Typography>
-      <Button variant="contained" component="label">
-        Upload Pull Sheet Export
-        <input
-          type="file"
-          accept=".csv"
-          ref={fileInputRef}
-          hidden
-          onChange={handleFileUpload}
-        />
-      </Button>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            TCGplayer Pull Sheet Tool
+          </Typography>
+          <Button variant="contained" component="label">
+            Upload Pull Sheet Export
+            <input
+              type="file"
+              accept=".csv"
+              ref={fileInputRef}
+              hidden
+              onChange={handleFileUpload}
+            />
+          </Button>
+        </Toolbar>
+      </AppBar>
       {products.length > 0 && (
         <Table size="small" stickyHeader>
           <TableHead>
