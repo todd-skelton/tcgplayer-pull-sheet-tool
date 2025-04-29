@@ -148,7 +148,7 @@ export default function Home() {
     }
   };
   return (
-    <Stack spacing={2}>
+    <Stack>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -171,7 +171,7 @@ export default function Home() {
           <TableHead>
             <TableRow>
               <TableCell>Product Line</TableCell>
-              <TableCell>Set</TableCell>
+              <TableCell align="right">Set</TableCell>
               <TableCell align="right">Quantity</TableCell>
               <TableCell>Product Name</TableCell>
               <TableCell>Condition</TableCell>
@@ -204,6 +204,16 @@ export default function Home() {
                 default:
                   textColor = theme.palette.text.primary;
               }
+
+              const fontWeight =
+                product.printing.includes("Holofoil") &&
+                !product.printing.includes("Reverse Holofoil")
+                  ? "bold"
+                  : "inherit";
+              const fontStyle = product.printing.includes("Reverse Holofoil")
+                ? "italic"
+                : "inherit";
+
               return (
                 <TableRow
                   key={index}
@@ -218,10 +228,21 @@ export default function Home() {
                   <TableCell sx={{ color: textColor }} align="right">
                     {product.set}
                   </TableCell>
-                  <TableCell sx={{ color: textColor }} align="right">
+                  <TableCell
+                    sx={{
+                      color: textColor,
+                    }}
+                    align="right"
+                  >
                     {product.quantity}
                   </TableCell>
-                  <TableCell sx={{ color: textColor }}>
+                  <TableCell
+                    sx={{
+                      color: textColor,
+                      fontWeight: fontWeight,
+                      fontStyle: fontStyle,
+                    }}
+                  >
                     {product.displayName}
                   </TableCell>
                   <TableCell sx={{ color: textColor }}>
