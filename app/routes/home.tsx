@@ -10,13 +10,12 @@ import {
   Toolbar,
   Typography,
   useTheme,
-  type Theme,
+  type Palette,
 } from "@mui/material";
 import type { Route } from "./+types/home";
 import React, { useRef, useState } from "react";
 import Papa from "papaparse";
 import { parseCsvProduct, type CsvProduct, type Product } from "./Product";
-import type { Palette } from "node_modules/@mui/material";
 
 export function meta({}: Route.MetaArgs) {
   return [
