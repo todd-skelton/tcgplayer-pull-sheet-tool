@@ -10,107 +10,13 @@ import {
   Toolbar,
   Typography,
   useTheme,
+  type Theme,
 } from "@mui/material";
 import type { Route } from "./+types/home";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Papa from "papaparse";
-
-type Condition =
-  | "Near Mint"
-  | "Lightly Played"
-  | "Moderately Played"
-  | "Heavily Played"
-  | "Damaged"
-  | "Unopened"
-  | "Unknown";
-
-interface CsvProduct {
-  "Product Line": string;
-  "Product Name": string;
-  Condition: string;
-  Number: string;
-  Set: string;
-  Rarity: string;
-  Quantity: string;
-  Main: string;
-  "Photo URL": string;
-  "Set Release Date": string;
-}
-
-interface Product {
-  productLine: string;
-  productName: string;
-  displayName: string;
-  condition: string;
-  displayCondition: Condition;
-  printing: string;
-  number: string;
-  set: string;
-  rarity: string;
-  quantity: number;
-  main: string;
-  photoUrl: string;
-  setReleaseDate: string;
-}
-
-const conditions: Condition[] = [
-  "Near Mint",
-  "Lightly Played",
-  "Moderately Played",
-  "Heavily Played",
-  "Damaged",
-  "Unopened",
-];
-
-function parseConditionAndPrinting(condition: string): {
-  displayCondition: Condition;
-  printing: string;
-} {
-  const foundCondition = conditions.find((c) => condition?.startsWith(c));
-  const foundPrinting = condition.substring(foundCondition?.length || 0).trim();
-  return {
-    displayCondition: foundCondition || "Unknown",
-    printing: foundPrinting,
-  };
-}
-
-function buildDisplayName(
-  productName: string,
-  number: string,
-  printing: string,
-  rarity: string
-): string {
-  if (!productName.endsWith(number))
-    return `${productName} - ${number} - ${rarity} ${printing}`;
-  return `${productName} - ${rarity} ${printing}`;
-}
-
-function parseCsvProduct(csvProduct: CsvProduct): Product {
-  const { displayCondition, printing } = parseConditionAndPrinting(
-    csvProduct.Condition
-  );
-
-  return {
-    productLine: csvProduct["Product Line"],
-    productName: csvProduct["Product Name"],
-    displayName: buildDisplayName(
-      csvProduct["Product Name"],
-      csvProduct.Number,
-      printing,
-      csvProduct.Rarity
-    ),
-    condition: csvProduct["Condition"],
-    displayCondition: displayCondition,
-    printing: printing,
-    number: csvProduct.Number,
-    set: csvProduct.Set,
-    rarity: csvProduct.Rarity,
-    quantity: parseInt(csvProduct.Quantity, 10),
-    main: csvProduct.Main,
-    photoUrl: csvProduct["Photo URL"],
-    setReleaseDate: csvProduct["Set Release Date"],
-  };
-}
+import { parseCsvProduct, type CsvProduct, type Product } from "./Product";
+import type { Palette } from "node_modules/@mui/material";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -182,38 +88,10 @@ export default function Home() {
           </TableHead>
           <TableBody>
             {products.map((product, index) => {
-              let textColor = theme.palette.text.primary;
-              switch (product.displayCondition) {
-                case "Near Mint":
-                  break;
-                case "Lightly Played":
-                  textColor = theme.palette.primary.main;
-                  break;
-                case "Moderately Played":
-                  textColor = theme.palette.success.main;
-                  break;
-                case "Heavily Played":
-                  textColor = theme.palette.warning.main;
-                  break;
-                case "Damaged":
-                  textColor = theme.palette.error.main;
-                  break;
-                case "Unopened":
-                  textColor = theme.palette.info.main;
-                  break;
-                default:
-                  textColor = theme.palette.text.primary;
-              }
-
-              const fontWeight =
-                product.printing.includes("Reverse") ||
-                !product.printing.includes("Holofoil")
-                  ? 200
-                  : "inherit";
-
-              const fontStyle = product.printing.includes("Reverse Holofoil")
-                ? "italic"
-                : "inherit";
+              const { color, fontWeight, fontStyle } = getFontStyle(
+                product.condition,
+                theme.palette
+              );
 
               return (
                 <TableRow
@@ -223,15 +101,13 @@ export default function Home() {
                       index % 2 === 0 ? theme.palette.action.hover : "inherit",
                   }}
                 >
-                  <TableCell sx={{ color: textColor }}>
-                    {product.productLine}
-                  </TableCell>
-                  <TableCell sx={{ color: textColor }} align="right">
+                  <TableCell sx={{ color }}>{product.productLine}</TableCell>
+                  <TableCell sx={{ color }} align="right">
                     {product.set}
                   </TableCell>
                   <TableCell
                     sx={{
-                      color: textColor,
+                      color,
                     }}
                     align="right"
                   >
@@ -239,25 +115,19 @@ export default function Home() {
                   </TableCell>
                   <TableCell
                     sx={{
-                      color: textColor,
-                      fontWeight: fontWeight,
-                      fontStyle: fontStyle,
+                      color,
+                      fontWeight,
+                      fontStyle,
                     }}
                   >
                     {product.displayName}
                   </TableCell>
-                  <TableCell sx={{ color: textColor }}>
+                  <TableCell sx={{ color }}>
                     {product.displayCondition}
                   </TableCell>
-                  <TableCell sx={{ color: textColor }}>
-                    {product.main}
-                  </TableCell>
-                  <TableCell sx={{ color: textColor }}>
-                    {product.photoUrl}
-                  </TableCell>
-                  <TableCell sx={{ color: textColor }}>
-                    {product.setReleaseDate}
-                  </TableCell>
+                  <TableCell sx={{ color }}>{product.main}</TableCell>
+                  <TableCell sx={{ color }}>{product.photoUrl}</TableCell>
+                  <TableCell sx={{ color }}>{product.setReleaseDate}</TableCell>
                 </TableRow>
               );
             })}
@@ -266,4 +136,38 @@ export default function Home() {
       )}
     </Stack>
   );
+}
+
+function getFontStyle(
+  condition: string,
+  palette: Palette
+): { color: string; fontWeight: string | number; fontStyle: string } {
+  let fontWeight = 300;
+
+  if (condition.includes("Holo") || condition.includes("Foil"))
+    fontWeight += 200;
+
+  if (condition.includes("1st Edition")) fontWeight += 200;
+
+  if (condition.includes("Reverse Holofoil")) fontWeight -= 200;
+
+  const fontStyle = condition.includes("Reverse Holofoil")
+    ? "italic"
+    : "inherit";
+
+  const color = condition.startsWith("Near Mint")
+    ? palette.text.primary
+    : condition.startsWith("Lightly Played")
+    ? palette.primary.main
+    : condition.startsWith("Moderately Played")
+    ? palette.success.main
+    : condition.startsWith("Heavily Played")
+    ? palette.warning.main
+    : condition.startsWith("Damaged")
+    ? palette.error.main
+    : condition.startsWith("Unopened")
+    ? palette.info.main
+    : palette.text.primary;
+
+  return { color, fontWeight, fontStyle };
 }
