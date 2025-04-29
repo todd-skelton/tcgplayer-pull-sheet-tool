@@ -87,46 +87,28 @@ export default function Home() {
           </TableHead>
           <TableBody>
             {products.map((product, index) => {
-              const { color, fontWeight, fontStyle } = getFontStyle(
-                product.condition,
-                theme.palette
-              );
+              const cellStyle = getFontStyle(product.condition, theme.palette);
+              const rowStyle = {
+                backgroundColor:
+                  index % 2 === 0 ? theme.palette.action.hover : "inherit",
+              };
 
               return (
-                <TableRow
-                  key={index}
-                  sx={{
-                    backgroundColor:
-                      index % 2 === 0 ? theme.palette.action.hover : "inherit",
-                  }}
-                >
-                  <TableCell sx={{ color }}>{product.productLine}</TableCell>
-                  <TableCell sx={{ color }} align="right">
+                <TableRow key={index} sx={rowStyle}>
+                  <TableCell sx={cellStyle}>{product.productLine}</TableCell>
+                  <TableCell sx={cellStyle} align="right">
                     {product.set}
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      color,
-                    }}
-                    align="right"
-                  >
+                  <TableCell sx={cellStyle} align="right">
                     {product.quantity}
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      color,
-                      fontWeight,
-                      fontStyle,
-                    }}
-                  >
-                    {product.displayName}
-                  </TableCell>
-                  <TableCell sx={{ color }}>
+                  <TableCell sx={cellStyle}>{product.displayName}</TableCell>
+                  <TableCell sx={cellStyle}>
                     {product.displayCondition}
                   </TableCell>
-                  <TableCell sx={{ color }}>{product.main}</TableCell>
-                  <TableCell sx={{ color }}>{product.photoUrl}</TableCell>
-                  <TableCell sx={{ color }}>{product.setReleaseDate}</TableCell>
+                  <TableCell sx={cellStyle}>{product.main}</TableCell>
+                  <TableCell sx={cellStyle}>{product.photoUrl}</TableCell>
+                  <TableCell sx={cellStyle}>{product.setReleaseDate}</TableCell>
                 </TableRow>
               );
             })}
