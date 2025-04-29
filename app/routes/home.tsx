@@ -15,7 +15,7 @@ import {
 import type { Route } from "./+types/home";
 import React, { useRef, useState } from "react";
 import Papa from "papaparse";
-import { parseCsvProduct, type CsvProduct, type Product } from "./Product";
+import { parseCsvProduct, type CsvProduct, type Product } from "./product";
 
 export function meta({}: Route.MetaArgs) {
   return [
