@@ -206,10 +206,11 @@ export default function Home() {
               }
 
               const fontWeight =
-                product.printing.includes("Holofoil") &&
-                !product.printing.includes("Reverse Holofoil")
-                  ? "bold"
+                product.printing.includes("Reverse") ||
+                !product.printing.includes("Holofoil")
+                  ? 200
                   : "inherit";
+
               const fontStyle = product.printing.includes("Reverse Holofoil")
                 ? "italic"
                 : "inherit";
