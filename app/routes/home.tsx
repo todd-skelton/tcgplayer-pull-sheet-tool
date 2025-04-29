@@ -12,7 +12,7 @@ import {
   useTheme,
 } from "@mui/material";
 import type { Route } from "./+types/home";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Papa from "papaparse";
 
 type Condition =
