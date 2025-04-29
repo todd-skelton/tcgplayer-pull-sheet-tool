@@ -87,7 +87,7 @@ export default function Home() {
           </TableHead>
           <TableBody>
             {products.map((product, index) => {
-              const cellStyle = getFontStyle(product.condition, theme.palette);
+              const cellStyle = getCellStyle(product.condition, theme.palette);
               const rowStyle = {
                 backgroundColor:
                   index % 2 === 0 ? theme.palette.action.hover : "inherit",
@@ -119,7 +119,7 @@ export default function Home() {
   );
 }
 
-function getFontStyle(
+function getCellStyle(
   condition: string,
   palette: Palette
 ): { color: string; fontWeight: string | number; fontStyle: string } {
