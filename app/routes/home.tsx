@@ -123,7 +123,7 @@ function getCellStyle(
   condition: string,
   palette: Palette
 ): { color: string; fontWeight: string | number; fontStyle: string } {
-  let fontWeight = 300;
+  let fontWeight = 200;
 
   if (condition.includes("Holo") || condition.includes("Foil"))
     fontWeight += 200;
