@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -34,13 +35,27 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
-
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setThemeMode(mediaQuery.matches ? "dark" : "light");
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setThemeMode(event.matches ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  const theme = createTheme({
+    palette: {
+      mode: themeMode,
+    },
+  });
+
   return (
     <html lang="en">
       <head>
@@ -50,7 +65,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider theme={darkTheme}>
+        <ThemeProvider theme={theme}>
           <CssBaseline />
           {children}
         </ThemeProvider>
