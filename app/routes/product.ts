@@ -15,8 +15,7 @@ export interface CsvProduct {
   Set: string;
   Rarity: string;
   Quantity: string;
-  Main: string;
-  "Photo URL": string;
+  "Main Photo URL": string;
   "Set Release Date": string;
 }
 
@@ -31,8 +30,7 @@ export interface Product {
   set: string;
   rarity: string;
   quantity: number;
-  main: string;
-  photoUrl: string;
+  mainPhotoUrl: string;
   setReleaseDate: string;
 }
 
@@ -66,8 +64,7 @@ export function parseCsvProduct(csvProduct: CsvProduct): Product {
     set: csvProduct.Set,
     rarity: csvProduct.Rarity,
     quantity: parseInt(csvProduct.Quantity, 10),
-    main: csvProduct.Main,
-    photoUrl: csvProduct["Photo URL"],
+    mainPhotoUrl: csvProduct["Main Photo URL"],
     setReleaseDate: csvProduct["Set Release Date"],
   };
 }

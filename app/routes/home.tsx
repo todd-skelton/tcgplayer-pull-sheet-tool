@@ -80,8 +80,7 @@ export default function Home() {
               <TableCell align="right">Quantity</TableCell>
               <TableCell>Product Name</TableCell>
               <TableCell>Condition</TableCell>
-              <TableCell>Main</TableCell>
-              <TableCell>Photo URL</TableCell>
+              <TableCell>Main Photo URL</TableCell>
               <TableCell>Set Release Date</TableCell>
             </TableRow>
           </TableHead>
@@ -92,6 +91,14 @@ export default function Home() {
                 backgroundColor:
                   index % 2 === 0 ? theme.palette.action.hover : "inherit",
               };
+
+              let formattedReleaseDate = product.setReleaseDate;
+              if (
+                formattedReleaseDate &&
+                typeof formattedReleaseDate === "string"
+              ) {
+                formattedReleaseDate = formattedReleaseDate.split(" ")[0];
+              }
 
               return (
                 <TableRow key={index} sx={rowStyle}>
@@ -106,9 +113,8 @@ export default function Home() {
                   <TableCell sx={cellStyle}>
                     {product.displayCondition}
                   </TableCell>
-                  <TableCell sx={cellStyle}>{product.main}</TableCell>
-                  <TableCell sx={cellStyle}>{product.photoUrl}</TableCell>
-                  <TableCell sx={cellStyle}>{product.setReleaseDate}</TableCell>
+                  <TableCell sx={cellStyle}>{product.mainPhotoUrl}</TableCell>
+                  <TableCell sx={cellStyle}>{formattedReleaseDate}</TableCell>
                 </TableRow>
               );
             })}
